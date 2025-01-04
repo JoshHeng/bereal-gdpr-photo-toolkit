@@ -9,6 +9,9 @@ import time
 import shutil
 from iptcinfo3 import IPTCInfo
 
+# EARLIEST DATE - E.g. 20250104
+EARLIEST_DATE = '20240830'
+
 # ANSI escape codes for text styling
 STYLING = {
     "GREEN": "\033[92m",
@@ -344,6 +347,10 @@ except FileNotFoundError:
 
 # Process files
 for entry in data:
+    if EARLIEST_DATE and entry['takenAt'].split('T')[0].replace('-', '') < EARLIEST_DATE:
+        logging.info(f"Skipping entry {entry['takenAt']} as it is older than {EARLIEST_DATE}")
+        continue
+
     try:
         # Extract only the filename from the path and then append it to the photo_folder path
         primary_filename = Path(entry['primary']['path']).name
